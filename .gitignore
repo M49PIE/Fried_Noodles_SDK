@@ -1,0 +1,44 @@
+# === PYTHON ARTIFACTS ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# === OBSIDIAN (игнорируем ВСЕ файлы заметок, настроек и канвасов) ===
+.obsidian/
+Obsidian/
+*.canvas
+*.canvas~
+*.md~
+# Явно указываем пути внутри docs/, на всякий случай
+docs/.obsidian/
+docs/Obsidian/
+
+# === IDE & EDITORS ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === OS & TEMP FILES ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === LOGS & GENERATED DATA (НО оставляем конфиги!) ===
+logs/
+*.log
+data/
+!configs/
+!configs/*.json
+
+# === GIT ITSELF ===
+.git/
