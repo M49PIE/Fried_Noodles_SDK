@@ -5,6 +5,7 @@ from pathlib import Path
 from scripts.meat_balls.needs import NeedsSystem
 from scripts.plate.environment import Environment
 from scripts.garlic.sensation import SensationSystem
+from scripts.onion.perception import PerceptionSystem
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ class FriedNoodlesAgent:
         self.needs_system = NeedsSystem(self.config)
         self.environment = Environment()
         self.sensation = SensationSystem(perception_radius=10.0)
+        self.perception = PerceptionSystem(self.config)
         
         self.state = {
             "energy": self.config.get("homeostasis", {}).get("energy", {}).get("initial", 1.0),
@@ -29,7 +31,7 @@ class FriedNoodlesAgent:
         config_file = Path(path)
         if not config_file.exists():
             logger.warning(f"Config not found at {path}. Using defaults.")
-            return {"agent_id": "agent_001", "homeostasis": {"energy": {"initial": 1.0, "decay_rate": 0.01, "tension_threshold": 0.3}}}
+            return {"agent_id": "agent_001", "homeostasis": {"energy": {"initial": 1.0, "decay_rate": 0.01, "tension_threshold": 0.3}}, "valence_defaults": {"Food": 0.8, "Rock": 0.0, "Tree": 0.1}}
         with open(config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
 
@@ -46,15 +48,18 @@ class FriedNoodlesAgent:
         # 3. Фильтруем стимулы (Garlic)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
         
-        # 4. Расчет потребностей (Meat Balls)
+        # 4. Интерпретируем стимулы и назначаем валентность (Onion)
+        perceived_objects = self.perception.interpret_stimuli(stimuli, self.state)
+        
+        # 5. Расчет потребностей (Meat Balls) - пока без учета восприятия, но скоро добавим
         self.state["tension"] = self.needs_system.calculate_tension(self.state["energy"])
         self.state["quasi_need"] = self.needs_system.get_quasi_need(self.state["tension"])
         
-        # 5. Формируем лог
+        # 6. Формируем лог
         action = self.state["quasi_need"] if self.state["quasi_need"] else "Idle"
-        stimuli_log = ", ".join([f"{s['type']}({s['intensity']})" for s in stimuli]) if stimuli else "None"
+        perception_log = ", ".join([f"{p['type']}({p['valence']})" for p in perceived_objects]) if perceived_objects else "None"
         
-        logger.info(f"[Tick {self.tick_count:03d}] Energy={self.state['energy']:.2f} | Tension={self.state['tension']:.2f} | Stimuli: [{stimuli_log}] | Action: {action}")
+        logger.info(f"[Tick {self.tick_count:03d}] Energy={self.state['energy']:.2f} | Tension={self.state['tension']:.2f} | Perceived: [{perception_log}] | Action: {action}")
         
         return self.state.copy()
 
