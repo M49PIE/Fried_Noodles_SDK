@@ -5,59 +5,64 @@ from typing import List, Dict
 logger = logging.getLogger(__name__)
 
 class PerceptionSystem:
-    """Блок 4: Onion. Интерпретация стимулов и расчёт динамической валентности."""
+    """Блок 4: Onion. Интерпретация стимулов, модуляция внимания потребностями."""
     
     def __init__(self, config: dict):
-        # Используем innates_priors вместо defaults
         self.innate_priors = config.get("innate_priors", {})
-        # Снижаем порог шума, чтобы видеть нейтральные объекты (валентность 0.0)
-        self.noise_threshold = 0.05 
-        logger.info("🧅 PerceptionSystem initialized (Tabula Rasa mode)")
+        self.base_noise_threshold = 0.05
+        logger.info("🧅 PerceptionSystem initialized (Needs-driven Attention)")
         
     def interpret_stimuli(self, stimuli: List[Dict], agent_state: Dict) -> List[Dict]:
         """
-        Преобразует сырые стимулы в воспринятые объекты.
-        Если объект неизвестен (нет в innate_priors), валентность = 0.0.
+        Преобразует стимулы в воспринятые объекты.
+        Напряжение (Tension) модулирует порог фильтрации и интенсивность восприятия.
         """
+        tension = agent_state.get("tension", 0.0)
+        
+        # 1. Модуляция внимания по закону Йеркса-Додсона / теории поля Левина
+        # Чем выше напряжение, тем ниже порог игнорирования и выше интенсивность
+        attention_boost = 1.0 + tension * 0.8
+        dynamic_threshold = self.base_noise_threshold * max(0.2, (1.0 - tension * 0.7))
+        
         perceived = []
         hunger_level = 1.0 - agent_state.get("energy", 1.0)
         
         for stim in stimuli:
             obj_type = stim["type"]
-            
-            # БЕРЕМ ВАЛЕНТНОСТЬ: Если в приорах 0 или нет объекта -> 0.0
             base_valence = self.innate_priors.get(obj_type, 0.0)
             
-            # Динамическая коррекция (пока только для инстинктов, но структура готова)
+            # 2. Применяем усиление внимания к интенсивности стимула
+            modulated_intensity = min(1.0, stim["intensity"] * attention_boost)
+            
+            # 3. Рассчитываем валентность (пока без обучения)
             dynamic_valence = self._calculate_dynamic_valence(obj_type, base_valence, hunger_level)
             
-            # Фильтрация только абсолютного шума (очень близко к 0, но не сам 0, если объект важен)
-            # Логика: если объект физически есть, мы его видим, даже если он нам безразличен
-            if abs(dynamic_valence) < self.noise_threshold and obj_type not in self.innate_priors:
+            # 4. Фильтрация с динамическим порогом
+            if abs(dynamic_valence) < dynamic_threshold and obj_type not in self.innate_priors:
                 continue
                 
             perceived.append({
                 "type": obj_type,
                 "distance": stim["distance"],
-                "intensity": stim["intensity"],
-                "valence": dynamic_valence
+                "intensity": round(modulated_intensity, 2),
+                "valence": dynamic_valence,
+                "salience": round(modulated_intensity * (1.0 + tension), 2) # Мера заметности для Cheese/Ebi
             })
             
+        # Сортируем по заметности (salience) — самые "кричащие" объекты идут первыми
+        perceived.sort(key=lambda x: x["salience"], reverse=True)
+        
         if perceived:
-            log_items = [f"{p['type']}({p['valence']})" for p in perceived]
+            log_items = [f"{p['type']}({p['valence']}, sal={p['salience']})" for p in perceived]
             logger.debug(f"Perceived: {', '.join(log_items)}")
         else:
-            logger.debug("Perception: Field is empty or noise only")
+            logger.debug("Perception: Field empty or below dynamic threshold")
             
         return perceived
     
     def _calculate_dynamic_valence(self, obj_type: str, base_valence: float, hunger: float) -> float:
-        """Корректирует валентность."""
+        """Корректирует валентность с учётом гомеостаза."""
         valence = base_valence
-        
-        # Если валентность была положительной (инстинкт), голод её усиливает
-        # Если валентность была 0 (незнание), голод пока не меняет её (агент не знает, что это еда)
         if base_valence > 0: 
             valence += hunger * 0.5
-            
         return round(max(-1.0, min(1.0, valence)), 2)

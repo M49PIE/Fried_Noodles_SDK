@@ -31,14 +31,14 @@ class FriedNoodlesAgent:
         config_file = Path(path)
         if not config_file.exists():
             logger.warning(f"Config not found at {path}. Using defaults.")
-            return {"agent_id": "agent_001", "homeostasis": {"energy": {"initial": 1.0, "decay_rate": 0.01, "tension_threshold": 0.3}}, "valence_defaults": {"Food": 0.8, "Rock": 0.0, "Tree": 0.1}}
+            return {"agent_id": "agent_001", "homeostasis": {"energy": {"initial": 1.0, "decay_rate": 0.01, "tension_threshold": 0.3}}, "innate_priors": {"Food": 0.0, "Rock": 0.0}}
         with open(config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
 
     def tick(self) -> dict:
         self.tick_count += 1
         
-        # 1. Обновляем энергию
+        # 1. Обновляем энергию (Plate/Homeostasis)
         decay = self.config.get("homeostasis", {}).get("energy", {}).get("decay_rate", 0.01)
         self.state["energy"] = max(0.0, self.state["energy"] - decay)
         
@@ -48,27 +48,31 @@ class FriedNoodlesAgent:
         # 3. Фильтруем стимулы (Garlic)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
         
-        # 4. Интерпретируем стимулы и назначаем валентность (Onion)
+        # 4. Интерпретируем стимулы, учитывая Tension (Onion + Meat Balls link)
         perceived_objects = self.perception.interpret_stimuli(stimuli, self.state)
         
-        # 5. Расчет потребностей (Meat Balls) - пока без учета восприятия, но скоро добавим
+        # 5. Расчет потребностей (Meat Balls)
         self.state["tension"] = self.needs_system.calculate_tension(self.state["energy"])
         self.state["quasi_need"] = self.needs_system.get_quasi_need(self.state["tension"])
         
         # 6. Формируем лог
         action = self.state["quasi_need"] if self.state["quasi_need"] else "Idle"
-        perception_log = ", ".join([f"{p['type']}({p['valence']})" for p in perceived_objects]) if perceived_objects else "None"
+        
+        # --- ВАЖНО: Выводим теперь и valence, и salience (заметность) ---
+        if perceived_objects:
+            perception_log = ", ".join([f"{p['type']}({p['valence']}, sal={p['salience']})" for p in perceived_objects])
+        else:
+            perception_log = "None"
         
         logger.info(f"[Tick {self.tick_count:03d}] Energy={self.state['energy']:.2f} | Tension={self.state['tension']:.2f} | Perceived: [{perception_log}] | Action: {action}")
         
         return self.state.copy()
 
     def run_demo(self, ticks: int = 40):
-        # Инициализация тестовой среды
-        logger.info("🍽️ Setting up environment...")
-        self.environment.add_object("Food", distance=5.0, base_valence=0.8)
+        logger.info("️ Setting up environment...")
+        self.environment.add_object("Food", distance=5.0, base_valence=0.0) # Valence 0.0 (Tabula Rasa)
         self.environment.add_object("Rock", distance=2.0, base_valence=0.0)
-        self.environment.add_object("Tree", distance=12.0, base_valence=0.1)
+        self.environment.add_object("Tree", distance=12.0, base_valence=0.0)
         
         for _ in range(ticks):
             self.tick()
