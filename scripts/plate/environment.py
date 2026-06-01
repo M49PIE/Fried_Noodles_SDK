@@ -18,7 +18,8 @@ class Environment:
             "type": obj_type,
             "x": x,
             "y": y,
-            "base_valence": base_valence
+            "base_valence": base_valence,
+            "consumed": False  # Флаг взаимодействия
         })
         logger.debug(f"Added object: {obj_type} at ({x}, {y})")
         
@@ -26,11 +27,15 @@ class Environment:
         """Возвращает объекты в радиусе, рассчитывая дистанцию динамически."""
         nearby = []
         for obj in self.objects:
+            # 🚫 Пропускаем объекты, которые уже были взаимодействованы
+            if obj.get("consumed", False):
+                continue
+                
             # Теорема Пифагора для дистанции
             dist = math.sqrt((obj["x"] - agent_x)**2 + (obj["y"] - agent_y)**2)
             
             if dist <= max_distance:
-                # Возвращаем копию объекта с добавленной дистанцией (нужно для Onion/Ebi)
+                # Возвращаем копию объекта с добавленной дистанцией
                 obj_data = obj.copy()
                 obj_data["distance"] = dist
                 nearby.append(obj_data)
