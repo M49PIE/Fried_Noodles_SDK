@@ -29,6 +29,13 @@ class FriedNoodlesAgent:
         
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = 0
+        
+        # Для динамического спавна (еда чаще)
+        self.next_food_spawn = random.randint(10, 20)
+        self.next_rock_spawn = random.randint(50, 80)
+        self.food_spawn_chance = 0.3
+        self.rock_spawn_chance = 0.15
+        self.arena_bounds = (0, 20)
 
         self.needs_system = NeedsSystem(self.config)
         self.environment = Environment()
@@ -76,7 +83,6 @@ class FriedNoodlesAgent:
             
         target = max(interactable, key=lambda x: x["salience"])
         
-        # ✅ ПРОВЕРКА: Если объект уже имеет негативную валентность — пропускаем
         if target.get("valence", 0.0) < 0:
             return False, "neutral"
         
@@ -131,6 +137,32 @@ class FriedNoodlesAgent:
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = random.randint(5, 15)
 
+    def _try_spawn_objects(self):
+        """Пытается заспавнить новые объекты в мире"""
+        # СПАВН ЕДЫ: Частота увеличена (10-20 тиков)
+        if self.tick_count >= self.next_food_spawn and random.random() < self.food_spawn_chance:
+            for _ in range(10):
+                fx = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
+                fy = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
+                dist_to_agent = math.sqrt((fx - self.position[0])**2 + (fy - self.position[1])**2)
+                if dist_to_agent > 5.0:
+                    self.environment.add_object("Food", x=fx, y=fy, base_valence=0.0)
+                    logger.info(f"✨ Spawned Food at ({fx:.1f}, {fy:.1f})")
+                    break
+            self.next_food_spawn = self.tick_count + random.randint(10, 20)
+        
+        # Спавн камней (без изменений)
+        if self.tick_count >= self.next_rock_spawn and random.random() < self.rock_spawn_chance:
+            for _ in range(10):
+                rx = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
+                ry = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
+                dist_to_agent = math.sqrt((rx - self.position[0])**2 + (ry - self.position[1])**2)
+                if dist_to_agent > 5.0:
+                    self.environment.add_object("Rock", x=rx, y=ry, base_valence=0.0)
+                    logger.info(f"✨ Spawned Rock at ({rx:.1f}, {ry:.1f})")
+                    break
+            self.next_rock_spawn = self.tick_count + random.randint(50, 80)
+
     def tick(self) -> dict:
         self.tick_count += 1
         
@@ -140,16 +172,18 @@ class FriedNoodlesAgent:
         if self.state["energy"] <= 0:
             self.state["tension"] = 1.0
             self.state["quasi_need"] = "SeekFood"
-            if self.tick_count % 10 == 0:
+            if self.tick_count % 20 == 0:
                 logger.warning(f"[Tick {self.tick_count:03d}] Agent collapsed! Energy=0.00 | Position: ({self.position[0]:.2f}, {self.position[1]:.2f})")
             return self.state.copy()
         
         self.memory.update_agent_position(self.position[0], self.position[1])
         
+        # Динамический спавн
+        self._try_spawn_objects()
+        
         nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 15.0)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
         
-        # ✅ ПЕРЕДАЕМ ПАМЯТЬ В PERCEPTION
         memory_valences = {
             f"{obj['type']}_{obj['x']}_{obj['y']}": obj['valence']
             for obj in self.memory.object_memories.values()
@@ -157,7 +191,6 @@ class FriedNoodlesAgent:
         
         perceived_objects = self.perception.interpret_stimuli(stimuli, self.state, memory_valences)
         
-        # Обновляем память (но только если valence НЕ была запомнена ранее)
         for obj in perceived_objects:
             mem_key = f"{obj['type']}_{obj['x']}_{obj['y']}"
             if mem_key not in memory_valences:
@@ -173,8 +206,14 @@ class FriedNoodlesAgent:
             if self.state["quasi_need"] and self.state["energy"] > 0.5:
                 self.state["quasi_need"] = None
         else:
+            # 2. Выбор действия
             action = self.behavior_system.select_action(self.state["quasi_need"], perceived_objects)
             
+            # ✅ ИСПРАВЛЕНИЕ: Если агент голоден, но ничего не видит -> принудительное блуждание
+            if action == "Idle" and self.state["quasi_need"]:
+                action = "FieldAction: Wander"
+            
+            # 3. Обработка действий
             if action.startswith("Approach:") or action.startswith("Investigate:"):
                 target_type = action.split(": ")[1]
                 targets = [obj for obj in nearby_objects if obj['type'] == target_type]
@@ -229,9 +268,10 @@ class FriedNoodlesAgent:
         
         return self.state.copy()
 
-    def run_demo(self, ticks: int = 150):
+    def run_demo(self, ticks: int = 400):
         logger.info("🍽️ Setting up environment...")
         
+        # Начальный спавн
         for _ in range(2):
             fx, fy = random.uniform(5, 18), random.uniform(5, 18)
             self.environment.add_object("Food", x=fx, y=fy, base_valence=0.0)
