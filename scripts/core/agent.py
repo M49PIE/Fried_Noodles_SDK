@@ -11,6 +11,7 @@ from scripts.garlic.sensation import SensationSystem
 from scripts.onion.perception import PerceptionSystem
 from scripts.ebi.behavior import BehaviorSystem
 from scripts.noodles.field_memory import FieldMemory
+from scripts.sauce.learning import LearningSystem
 from scripts.debug.plate.environment_debug import EnvironmentDebug
 from scripts.debug.meat_balls.needs_debug import NeedsDebug
 
@@ -26,7 +27,6 @@ class FriedNoodlesAgent:
         self.speed = 0.4
         self.interaction_radius = 1.5
         
-        # Для случайного блуждания
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = 0
 
@@ -36,6 +36,7 @@ class FriedNoodlesAgent:
         self.perception = PerceptionSystem(self.config)
         self.behavior_system = BehaviorSystem()
         self.memory = FieldMemory()
+        self.learning = LearningSystem(learning_rate=0.3)
         
         if self.enable_debug:
             self.viz_plate = EnvironmentDebug()
@@ -59,7 +60,7 @@ class FriedNoodlesAgent:
                     "energy": {
                         "initial": 1.0, 
                         "decay_rate": 0.01, 
-                        "tension_threshold": 0.3, 
+                        "tension_threshold": 0.10,
                         "restore_amount": 0.3
                     }
                 }, 
@@ -68,41 +69,65 @@ class FriedNoodlesAgent:
         with open(config_file, 'r', encoding='utf-8') as f:
             return json.load(f)
 
-    def _try_interact(self, perceived_objects: list) -> bool:
+    def _try_interact(self, perceived_objects: list) -> tuple[bool, str]:
         interactable = [obj for obj in perceived_objects if obj["distance"] <= self.interaction_radius]
         if not interactable:
-            return False
+            return False, "neutral"
             
         target = max(interactable, key=lambda x: x["salience"])
         
+        # ✅ ПРОВЕРКА: Если объект уже имеет негативную валентность — пропускаем
+        if target.get("valence", 0.0) < 0:
+            return False, "neutral"
+        
+        old_valence = target.get("valence", 0.0)
+        
         if target["type"] == "Food":
             if self.state["energy"] > 0.95:
-                return False
+                return False, "neutral"
                 
             restore = self.config.get("homeostasis", {}).get("energy", {}).get("restore_amount", 0.3)
             self.state["energy"] = min(1.0, self.state["energy"] + restore)
             
-            # ✅ ОБУЧЕНИЕ: еда = хорошо
-            self.memory.perceive_object(target["type"], target["x"], target["y"], valence=0.8, salience=target["salience"])
+            new_valence = self.learning.update_valence(old_valence, "success", "Food")
+            self.memory.perceive_object("Food", target["x"], target["y"], valence=new_valence, salience=target["salience"])
             
             for env_obj in self.environment.objects:
-                if env_obj["type"] == target["type"] and env_obj["x"] == target["x"] and env_obj["y"] == target["y"]:
+                if env_obj["type"] == "Food" and env_obj["x"] == target["x"] and env_obj["y"] == target["y"]:
                     env_obj["consumed"] = True
                     break
             
-            logger.info(f"🍽️ Ate Food! Energy +{restore:.2f}")
-            return True
+            self.learning.log_event(
+                tick=self.tick_count,
+                action="Consume",
+                target_type="Food",
+                outcome="success",
+                valence_before=old_valence,
+                valence_after=new_valence
+            )
+            
+            logger.info(f"🍽️ Ate Food! Energy +{restore:.2f} | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            return True, "success"
             
         elif target["type"] == "Rock":
-            # ✅ ОБУЧЕНИЕ: камень = бесполезно (валентность становится отрицательной)
-            self.memory.perceive_object(target["type"], target["x"], target["y"], valence=-0.2, salience=target["salience"])
-            logger.info("🪨 Investigated Rock: no nutritional value (valence=-0.2)")
-            return False
+            new_valence = self.learning.update_valence(old_valence, "failure", "Rock")
+            self.memory.perceive_object("Rock", target["x"], target["y"], valence=new_valence, salience=target["salience"])
             
-        return False
+            self.learning.log_event(
+                tick=self.tick_count,
+                action="Investigate",
+                target_type="Rock",
+                outcome="failure",
+                valence_before=old_valence,
+                valence_after=new_valence
+            )
+            
+            logger.info(f"🪨 Investigated Rock: no value | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            return False, "failure"
+            
+        return False, "neutral"
 
     def _update_wander_direction(self):
-        """Меняет направление случайного блуждания"""
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = random.randint(5, 15)
 
@@ -112,28 +137,44 @@ class FriedNoodlesAgent:
         decay = self.config.get("homeostasis", {}).get("energy", {}).get("decay_rate", 0.01)
         self.state["energy"] = max(0.0, self.state["energy"] - decay)
         
+        if self.state["energy"] <= 0:
+            self.state["tension"] = 1.0
+            self.state["quasi_need"] = "SeekFood"
+            if self.tick_count % 10 == 0:
+                logger.warning(f"[Tick {self.tick_count:03d}] Agent collapsed! Energy=0.00 | Position: ({self.position[0]:.2f}, {self.position[1]:.2f})")
+            return self.state.copy()
+        
         self.memory.update_agent_position(self.position[0], self.position[1])
         
         nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 15.0)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
-        perceived_objects = self.perception.interpret_stimuli(stimuli, self.state)
         
+        # ✅ ПЕРЕДАЕМ ПАМЯТЬ В PERCEPTION
+        memory_valences = {
+            f"{obj['type']}_{obj['x']}_{obj['y']}": obj['valence']
+            for obj in self.memory.object_memories.values()
+        }
+        
+        perceived_objects = self.perception.interpret_stimuli(stimuli, self.state, memory_valences)
+        
+        # Обновляем память (но только если valence НЕ была запомнена ранее)
         for obj in perceived_objects:
-            self.memory.perceive_object(obj["type"], obj["x"], obj["y"], obj["valence"], obj["salience"])
+            mem_key = f"{obj['type']}_{obj['x']}_{obj['y']}"
+            if mem_key not in memory_valences:
+                self.memory.perceive_object(obj["type"], obj["x"], obj["y"], obj["valence"], obj["salience"])
         
         self.state["tension"] = self.needs_system.calculate_tension(self.state["energy"])
         self.state["quasi_need"] = self.needs_system.get_quasi_need(self.state["tension"])
         
-        # 1. Попытка взаимодействия
-        if self._try_interact(perceived_objects):
+        interacted, outcome = self._try_interact(perceived_objects)
+        
+        if interacted:
             action = "Consume: Success"
             if self.state["quasi_need"] and self.state["energy"] > 0.5:
                 self.state["quasi_need"] = None
         else:
-            # 2. Выбор действия
             action = self.behavior_system.select_action(self.state["quasi_need"], perceived_objects)
             
-            # 3. Обработка действий
             if action.startswith("Approach:") or action.startswith("Investigate:"):
                 target_type = action.split(": ")[1]
                 targets = [obj for obj in nearby_objects if obj['type'] == target_type]
@@ -157,26 +198,22 @@ class FriedNoodlesAgent:
                         self.position = (self.position[0] + move_x, self.position[1] + move_y)
             
             elif action == "FieldAction: Wander":
-                # ✅ ПОЛЕВОЕ ПОВЕДЕНИЕ: случайное блуждание
                 self.wander_timer -= 1
                 if self.wander_timer <= 0:
                     self._update_wander_direction()
                 
-                # Нормализуем вектор
                 dx, dy = self.wander_direction
                 norm = math.sqrt(dx**2 + dy**2)
                 if norm > 0:
                     dx, dy = dx / norm, dy / norm
                 
-                move_x = dx * self.speed * 0.5  # Медленнее при блуждании
+                move_x = dx * self.speed * 0.5
                 move_y = dy * self.speed * 0.5
                 
-                # Ограничиваем ареной
                 new_x = max(0, min(20, self.position[0] + move_x))
                 new_y = max(0, min(20, self.position[1] + move_y))
                 self.position = (new_x, new_y)
 
-        # 4. Визуализация
         if self.enable_debug:
             self.viz_plate.update(nearby_objects, self.position)
             self.viz_plate.fig.canvas.draw()
@@ -186,17 +223,15 @@ class FriedNoodlesAgent:
             self.viz_needs.fig.canvas.flush_events()
             plt.pause(0.01)
             
-        # 5. Лог
         memory_count = len(self.memory.object_memories)
         perception_log = ", ".join([f"{p['type']}({p['valence']}, sal={p['salience']})" for p in perceived_objects]) if perceived_objects else "None"
         logger.info(f"[Tick {self.tick_count:03d}] Pos=({self.position[0]:.2f}, {self.position[1]:.2f}) | E={self.state['energy']:.2f} T={self.state['tension']:.2f} | Mem={memory_count} | Action: {action}")
         
         return self.state.copy()
 
-    def run_demo(self, ticks: int = 100):
+    def run_demo(self, ticks: int = 150):
         logger.info("🍽️ Setting up environment...")
         
-        # Спавним 2 еды и 1 камень для интереса
         for _ in range(2):
             fx, fy = random.uniform(5, 18), random.uniform(5, 18)
             self.environment.add_object("Food", x=fx, y=fy, base_valence=0.0)
@@ -208,6 +243,9 @@ class FriedNoodlesAgent:
         
         for _ in range(ticks):
             self.tick()
+        
+        summary = self.learning.get_learning_summary()
+        logger.info(f"🧠 Learning Summary: {summary}")
         
         if self.enable_debug:
             plt.ioff()

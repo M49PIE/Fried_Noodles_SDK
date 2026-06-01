@@ -12,11 +12,16 @@ class PerceptionSystem:
         self.base_noise_threshold = 0.05
         logger.info("🧅 PerceptionSystem initialized (Needs-driven Attention)")
         
-    def interpret_stimuli(self, stimuli: List[Dict], agent_state: Dict) -> List[Dict]:
+    def interpret_stimuli(self, stimuli: List[Dict], agent_state: Dict, memory_valences: Dict = None) -> List[Dict]:
         """
         Преобразует стимулы в воспринятые объекты.
-        Напряжение (Tension) модулирует порог фильтрации и интенсивность восприятия.
+        ✅ ИСПРАВЛЕНО: Использует запомненную валентность из памяти, если есть
+        
+        memory_valences: dict с ключами "type_x_y" → valence
         """
+        if memory_valences is None:
+            memory_valences = {}
+            
         tension = agent_state.get("tension", 0.0)
         
         # 1. Модуляция внимания
@@ -28,13 +33,23 @@ class PerceptionSystem:
         
         for stim in stimuli:
             obj_type = stim["type"]
-            base_valence = self.innate_priors.get(obj_type, 0.0)
+            
+            # ✅ ПРОВЕРКА ПАМЯТИ: Если объект уже исследован, используем запомненную валентность
+            mem_key = f"{stim['type']}_{stim['x']}_{stim['y']}"
+            if mem_key in memory_valences:
+                base_valence = memory_valences[mem_key]
+                logger.debug(f"Using memory valence for {mem_key}: {base_valence:.2f}")
+            else:
+                base_valence = self.innate_priors.get(obj_type, 0.0)
             
             # 2. Применяем усиление внимания
             modulated_intensity = min(1.0, stim["intensity"] * attention_boost)
             
-            # 3. Рассчитываем валентность
-            dynamic_valence = self._calculate_dynamic_valence(obj_type, base_valence, hunger_level)
+            # 3. Рассчитываем валентность (только если это новый объект)
+            if mem_key not in memory_valences:
+                dynamic_valence = self._calculate_dynamic_valence(obj_type, base_valence, hunger_level)
+            else:
+                dynamic_valence = base_valence  # Используем запомненное значение
             
             # 4. Фильтрация с динамическим порогом
             if abs(dynamic_valence) < dynamic_threshold and obj_type not in self.innate_priors:
@@ -43,8 +58,8 @@ class PerceptionSystem:
             perceived.append({
                 "type": obj_type,
                 "distance": stim["distance"],
-                "x": stim["x"], # <-- ПЕРЕДАЕМ X ДАЛЬШЕ
-                "y": stim["y"], # <-- ПЕРЕДАЕМ Y ДАЛЬШЕ
+                "x": stim["x"],
+                "y": stim["y"],
                 "intensity": round(modulated_intensity, 2),
                 "valence": dynamic_valence,
                 "salience": round(modulated_intensity * (1.0 + tension), 2)
