@@ -19,8 +19,7 @@ class PerceptionSystem:
         """
         tension = agent_state.get("tension", 0.0)
         
-        # 1. Модуляция внимания по закону Йеркса-Додсона / теории поля Левина
-        # Чем выше напряжение, тем ниже порог игнорирования и выше интенсивность
+        # 1. Модуляция внимания
         attention_boost = 1.0 + tension * 0.8
         dynamic_threshold = self.base_noise_threshold * max(0.2, (1.0 - tension * 0.7))
         
@@ -31,10 +30,10 @@ class PerceptionSystem:
             obj_type = stim["type"]
             base_valence = self.innate_priors.get(obj_type, 0.0)
             
-            # 2. Применяем усиление внимания к интенсивности стимула
+            # 2. Применяем усиление внимания
             modulated_intensity = min(1.0, stim["intensity"] * attention_boost)
             
-            # 3. Рассчитываем валентность (пока без обучения)
+            # 3. Рассчитываем валентность
             dynamic_valence = self._calculate_dynamic_valence(obj_type, base_valence, hunger_level)
             
             # 4. Фильтрация с динамическим порогом
@@ -44,12 +43,14 @@ class PerceptionSystem:
             perceived.append({
                 "type": obj_type,
                 "distance": stim["distance"],
+                "x": stim["x"], # <-- ПЕРЕДАЕМ X ДАЛЬШЕ
+                "y": stim["y"], # <-- ПЕРЕДАЕМ Y ДАЛЬШЕ
                 "intensity": round(modulated_intensity, 2),
                 "valence": dynamic_valence,
-                "salience": round(modulated_intensity * (1.0 + tension), 2) # Мера заметности для Cheese/Ebi
+                "salience": round(modulated_intensity * (1.0 + tension), 2)
             })
             
-        # Сортируем по заметности (salience) — самые "кричащие" объекты идут первыми
+        # Сортируем по заметности
         perceived.sort(key=lambda x: x["salience"], reverse=True)
         
         if perceived:

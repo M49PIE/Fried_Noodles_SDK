@@ -22,6 +22,8 @@ class SensationSystem:
                 stimuli.append({
                     "type": obj["type"],
                     "distance": obj["distance"],
+                    "x": obj["x"], # <-- ВОССТАНАВЛИВАЕМ X
+                    "y": obj["y"], # <-- ВОССТАНАВЛИВАЕМ Y
                     "intensity": self._calculate_intensity(obj["distance"])
                 })
         
@@ -34,6 +36,5 @@ class SensationSystem:
     
     def _calculate_intensity(self, distance: float) -> float:
         """Рассчитывает интенсивность стимула на основе дистанции."""
-        # Чем ближе объект, тем интенсивнее стимул (0.0 - 1.0)
         intensity = 1.0 - (distance / self.perception_radius)
         return round(max(0.0, min(1.0, intensity)), 2)
