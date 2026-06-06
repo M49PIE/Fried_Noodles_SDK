@@ -5,15 +5,20 @@ import math
 import random
 from pathlib import Path
 import matplotlib.pyplot as plt
-from scripts.meat_balls.needs import NeedsSystem
-from scripts.plate.environment import Environment
-from scripts.garlic.sensation import SensationSystem
-from scripts.onion.perception import PerceptionSystem
-from scripts.ebi.behavior import BehaviorSystem
-from scripts.noodles.field_memory import FieldMemory
-from scripts.sauce.learning import LearningSystem
-from scripts.debug.plate.environment_debug import EnvironmentDebug
-from scripts.debug.meat_balls.needs_debug import NeedsDebug
+
+# Core systems (обновлённые импорты)
+from scripts.tension_system.tension_system import NeedsSystem
+from scripts.world_model.world_model import Environment
+from scripts.sensation_input.sensation_input import SensationSystem
+from scripts.perception_filter.perception_filter import PerceptionSystem
+from scripts.action_executor.action_executor import BehaviorSystem
+from scripts.memory_field.memory_field import FieldMemory
+from scripts.valence_update.valence_update import LearningSystem
+from scripts.decision_engine.decision_engine import ThinkingSystem, ActionType
+
+# Debug tools
+from scripts.debug.world_model.world_model_debug import EnvironmentDebug
+from scripts.debug.tension_system.tension_system_debug import NeedsDebug
 
 logger = logging.getLogger(__name__)
 
@@ -30,20 +35,22 @@ class FriedNoodlesAgent:
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = 0
         
-        # Для динамического спавна (еда чаще)
+        # Для динамического спавна
         self.next_food_spawn = random.randint(10, 20)
         self.next_rock_spawn = random.randint(50, 80)
         self.food_spawn_chance = 0.3
         self.rock_spawn_chance = 0.15
         self.arena_bounds = (0, 20)
 
+        # Инициализация систем
         self.needs_system = NeedsSystem(self.config)
         self.environment = Environment()
         self.sensation = SensationSystem(perception_radius=5.0)
         self.perception = PerceptionSystem(self.config)
-        self.behavior_system = BehaviorSystem()
+        self.action_executor = BehaviorSystem()
         self.memory = FieldMemory()
         self.learning = LearningSystem(learning_rate=0.3)
+        self.thinking = ThinkingSystem()
         
         if self.enable_debug:
             self.viz_plate = EnvironmentDebug()
@@ -128,7 +135,7 @@ class FriedNoodlesAgent:
                 valence_after=new_valence
             )
             
-            logger.info(f"🪨 Investigated Rock: no value | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            logger.info(f" Investigated Rock: no value | Valence: {old_valence:.2f} → {new_valence:.2f}")
             return False, "failure"
             
         return False, "neutral"
@@ -139,7 +146,6 @@ class FriedNoodlesAgent:
 
     def _try_spawn_objects(self):
         """Пытается заспавнить новые объекты в мире"""
-        # СПАВН ЕДЫ: Частота увеличена (10-20 тиков)
         if self.tick_count >= self.next_food_spawn and random.random() < self.food_spawn_chance:
             for _ in range(10):
                 fx = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
@@ -151,7 +157,6 @@ class FriedNoodlesAgent:
                     break
             self.next_food_spawn = self.tick_count + random.randint(10, 20)
         
-        # Спавн камней (без изменений)
         if self.tick_count >= self.next_rock_spawn and random.random() < self.rock_spawn_chance:
             for _ in range(10):
                 rx = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
@@ -162,6 +167,27 @@ class FriedNoodlesAgent:
                     logger.info(f"✨ Spawned Rock at ({rx:.1f}, {ry:.1f})")
                     break
             self.next_rock_spawn = self.tick_count + random.randint(50, 80)
+
+    def _convert_action_to_string(self, action_candidate) -> str:
+        """Конвертирует ActionCandidate из Cheese в строку действия"""
+        if action_candidate.action_type == ActionType.APPROACH:
+            if action_candidate.target:
+                return f"Approach: {action_candidate.target['type']}"
+            return "Approach: Food"
+        elif action_candidate.action_type == ActionType.INVESTIGATE:
+            if action_candidate.target:
+                return f"Investigate: {action_candidate.target['type']}"
+            return "Investigate"
+        elif action_candidate.action_type == ActionType.CONSUME:
+            return "Consume: Success"
+        elif action_candidate.action_type == ActionType.FLEE:
+            return "Flee"
+        elif action_candidate.action_type == ActionType.WANDER:
+            return "FieldAction: Wander"
+        elif action_candidate.action_type == ActionType.SPEAK:
+            return "Speak"
+        else:
+            return "Idle"
 
     def tick(self) -> dict:
         self.tick_count += 1
@@ -178,7 +204,6 @@ class FriedNoodlesAgent:
         
         self.memory.update_agent_position(self.position[0], self.position[1])
         
-        # Динамический спавн
         self._try_spawn_objects()
         
         nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 15.0)
@@ -206,14 +231,22 @@ class FriedNoodlesAgent:
             if self.state["quasi_need"] and self.state["energy"] > 0.5:
                 self.state["quasi_need"] = None
         else:
-            # 2. Выбор действия
-            action = self.behavior_system.select_action(self.state["quasi_need"], perceived_objects)
+            thinking_context = {
+                "tension": self.state["tension"],
+                "energy": self.state["energy"],
+                "food_valence": 0.5,
+                "unknown_objects": len(perceived_objects) > 0,
+                "curiosity": 0.5,
+                "target": perceived_objects[0] if perceived_objects else None,
+                "candidates": []
+            }
             
-            # ✅ ИСПРАВЛЕНИЕ: Если агент голоден, но ничего не видит -> принудительное блуждание
+            best_action = self.thinking.select_action(thinking_context, memory_valences)
+            action = self._convert_action_to_string(best_action)
+            
             if action == "Idle" and self.state["quasi_need"]:
                 action = "FieldAction: Wander"
             
-            # 3. Обработка действий
             if action.startswith("Approach:") or action.startswith("Investigate:"):
                 target_type = action.split(": ")[1]
                 targets = [obj for obj in nearby_objects if obj['type'] == target_type]
@@ -269,9 +302,8 @@ class FriedNoodlesAgent:
         return self.state.copy()
 
     def run_demo(self, ticks: int = 400):
-        logger.info("🍽️ Setting up environment...")
+        logger.info("️ Setting up environment...")
         
-        # Начальный спавн
         for _ in range(2):
             fx, fy = random.uniform(5, 18), random.uniform(5, 18)
             self.environment.add_object("Food", x=fx, y=fy, base_valence=0.0)

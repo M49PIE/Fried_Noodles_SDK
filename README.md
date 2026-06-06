@@ -21,7 +21,7 @@ Fried Noodles is not just another AI agent—it's a **psychologically-grounded f
 
 ---
 
-## 🧠 Core Concepts
+##  Core Concepts
 
 ### Psychological Foundations
 - **Field Theory (Kurt Lewin):** Behavior = f(Person, Environment)
@@ -37,22 +37,28 @@ The agent uses **operant conditioning**:
 ---
 
 ## 🏗️ Architecture
+
 Fried_Noodles_SDK/
-├── scripts/
+── scripts/
 │ ├── core/
 │ │ └── agent.py # Main agent loop
-│ ├── plate/ # Block 1: Environment
-│ ├── meat_balls/ # Block 2: Needs
-│ ├── garlic/ # Block 3: Sensation
-│ ├── onion/ # Block 4: Perception
-│ ├── noodles/ # Block 5: Memory
-│ ├── ebi/ # Block 7: Behavior
-│ ├── sauce/ # Block 9: Learning
-│ └── debug/ # Visualization tools
+│ ├── world_model/ # Block 1: Environment
+│ ├── tension_system/ # Block 2: Needs & Homeostasis
+│ ├── sensation_input/ # Block 3: Stimulus Filtering
+│ ├── perception_filter/ # Block 4: Interpretation & Attention
+│ ├── memory_field/ # Block 5: Hodological Memory
+│ ├── decision_engine/ # Block 6: Utility AI + Behavior Tree
+│ ├── action_executor/ # Block 7: Physical Actions
+│ ├── locutionary_output/ # Block 8: Speech Generation (WIP)
+│ ├── valence_update/ # Block 9: Operant Conditioning
+│ └── debug/
+│ ├── world_model/
+│ ├── tension_system/
+│ └── shared/
 ├── configs/
 │ └── agent_profile.json # Agent configuration
 ├── docs/
-│ ├── Architecture.md # Technical documentation
+│ ├── architecture.md # Technical documentation
 │ └── field_theory.md # Psychological foundations
 ├── README.md
 └── requirements.txt
@@ -67,7 +73,6 @@ Fried_Noodles_SDK/
 - NumPy
 
 ### Install
-
 ```bash
 git clone https://github.com/M49PIE/Fried_Noodles_SDK.git
 cd Fried_Noodles_SDK
@@ -91,8 +96,8 @@ Survive by dynamically balancing needs and exploration
 Demo Duration: 400 ticks (~2-3 minutes)
 
 🎮 Configuration
-Edit configs/agent_profile.json to customize:
 
+Edit configs/agent_profile.json to customize:
 {
   "agent_id": "agent_001",
   "homeostasis": {
@@ -113,8 +118,9 @@ Key Parameters:
 decay_rate: Energy loss per tick
 tension_threshold: When to start seeking food (0.10 = 10% energy loss)
 restore_amount: Energy gained from eating
+
 📚 Documentation
-Architecture.md — Detailed block descriptions and API
+architecture.md — Detailed block descriptions and API
 field_theory.md — Theoretical foundations (Lewin, Skinner, Tolman)
 
 👨‍💻 Author
@@ -122,5 +128,6 @@ Aleksey Soroka
 Technical Narrative Designer | Master's of Social Psychology
 📧 magpie1337@gmail.com
 
-📄 License
+License
 MIT License — feel free to use for learning, prototyping, or commercial projects.
+
