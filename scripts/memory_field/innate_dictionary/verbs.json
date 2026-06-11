@@ -1,0 +1,22 @@
+{
+  "see": {
+    "category": "perception",
+    "tags": ["basic", "sensory"]
+  },
+  "interact": {
+    "category": "action",
+    "tags": ["basic", "physical"]
+  },
+  "approach": {
+    "category": "locomotion",
+    "tags": ["movement", "goal-oriented"]
+  },
+  "avoid": {
+    "category": "reaction",
+    "tags": ["safety", "instinct"]
+  },
+  "consume": {
+    "category": "survival",
+    "tags": ["biological", "need-fulfillment"]
+  }
+}

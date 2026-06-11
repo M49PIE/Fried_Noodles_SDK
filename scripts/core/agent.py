@@ -6,15 +6,16 @@ import random
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-# Core systems (обновлённые импорты)
+# Core systems
 from scripts.tension_system.tension_system import NeedsSystem
 from scripts.world_model.world_model import Environment
 from scripts.sensation_input.sensation_input import SensationSystem
 from scripts.perception_filter.perception_filter import PerceptionSystem
 from scripts.action_executor.action_executor import BehaviorSystem
-from scripts.memory_field.memory_field import FieldMemory
+from scripts.memory_field.memory_field import MemoryField, LearningSource
 from scripts.valence_update.valence_update import LearningSystem
 from scripts.decision_engine.decision_engine import ThinkingSystem, ActionType
+from scripts.locutionary_output.locutionary_output import LocutionaryOutput
 
 # Debug tools
 from scripts.debug.world_model.world_model_debug import EnvironmentDebug
@@ -35,35 +36,47 @@ class FriedNoodlesAgent:
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = 0
         
-        # Для динамического спавна
         self.next_food_spawn = random.randint(10, 20)
         self.next_rock_spawn = random.randint(50, 80)
         self.food_spawn_chance = 0.3
         self.rock_spawn_chance = 0.15
         self.arena_bounds = (0, 20)
 
-        # Инициализация систем
+        # 1. Инициализация базовых систем
         self.needs_system = NeedsSystem(self.config)
         self.environment = Environment()
         self.sensation = SensationSystem(perception_radius=5.0)
         self.perception = PerceptionSystem(self.config)
         self.action_executor = BehaviorSystem()
-        self.memory = FieldMemory()
+        
+        # 2. Инициализация памяти (ОБЯЗАТЕЛЬНО до визуализации)
+        self.memory = MemoryField(data_dir="scripts/memory_field")
+        self.cherry = LocutionaryOutput(self.memory)
+        
         self.learning = LearningSystem(learning_rate=0.3)
         self.thinking = ThinkingSystem()
         
+        # 3. Инициализация визуализации (ТЕПЕРЬ ИСПОЛЬЗУЕТ ИКОНКИ)
         if self.enable_debug:
-            self.viz_plate = EnvironmentDebug()
+            self.viz_plate = EnvironmentDebug(
+                innate_objects=self.memory.innate_objects, 
+                icon_dir="scripts/world_model/icons"  # ✅ Путь к папке с PNG
+            )
             self.viz_needs = NeedsDebug()
             plt.ion()
             logger.info("🔧 Debug visualizations enabled")
+        
+        # 4. Получение данных агента из словаря
+        agent_data = self.memory.innate_objects.get("Agent", {})
+        self.agent_emoji = agent_data.get("emoji", "👽")
+        self.agent_tags = agent_data.get("tags", ["alive", "intelligent"])
         
         self.state = {
             "energy": self.config.get("homeostasis", {}).get("energy", {}).get("initial", 1.0),
             "tension": 0.0,
             "quasi_need": None
         }
-        logger.info(f"🤖 Agent initialized at {self.position}")
+        logger.info(f"{self.agent_emoji} Agent initialized at {self.position} | Tags: {self.agent_tags}")
 
     def _load_config(self, path: str) -> dict:
         config_file = Path(path)
@@ -103,7 +116,8 @@ class FriedNoodlesAgent:
             self.state["energy"] = min(1.0, self.state["energy"] + restore)
             
             new_valence = self.learning.update_valence(old_valence, "success", "Food")
-            self.memory.perceive_object("Food", target["x"], target["y"], valence=new_valence, salience=target["salience"])
+            self.memory.register_object("Food", tags=["food", "edible"], coordinates=(target["x"], target["y"]))
+            self.memory.update_object_valence("Food", new_valence, target["salience"])
             
             for env_obj in self.environment.objects:
                 if env_obj["type"] == "Food" and env_obj["x"] == target["x"] and env_obj["y"] == target["y"]:
@@ -124,7 +138,8 @@ class FriedNoodlesAgent:
             
         elif target["type"] == "Rock":
             new_valence = self.learning.update_valence(old_valence, "failure", "Rock")
-            self.memory.perceive_object("Rock", target["x"], target["y"], valence=new_valence, salience=target["salience"])
+            self.memory.register_object("Rock", tags=["rock", "hard"], coordinates=(target["x"], target["y"]))
+            self.memory.update_object_valence("Rock", new_valence, target["salience"])
             
             self.learning.log_event(
                 tick=self.tick_count,
@@ -145,7 +160,6 @@ class FriedNoodlesAgent:
         self.wander_timer = random.randint(5, 15)
 
     def _try_spawn_objects(self):
-        """Пытается заспавнить новые объекты в мире"""
         if self.tick_count >= self.next_food_spawn and random.random() < self.food_spawn_chance:
             for _ in range(10):
                 fx = random.uniform(self.arena_bounds[0] + 1, self.arena_bounds[1] - 1)
@@ -169,7 +183,6 @@ class FriedNoodlesAgent:
             self.next_rock_spawn = self.tick_count + random.randint(50, 80)
 
     def _convert_action_to_string(self, action_candidate) -> str:
-        """Конвертирует ActionCandidate из Cheese в строку действия"""
         if action_candidate.action_type == ActionType.APPROACH:
             if action_candidate.target:
                 return f"Approach: {action_candidate.target['type']}"
@@ -203,23 +216,44 @@ class FriedNoodlesAgent:
             return self.state.copy()
         
         self.memory.update_agent_position(self.position[0], self.position[1])
-        
         self._try_spawn_objects()
         
         nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 15.0)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
         
-        memory_valences = {
-            f"{obj['type']}_{obj['x']}_{obj['y']}": obj['valence']
-            for obj in self.memory.object_memories.values()
-        }
+        memory_valences = {}
+        for obj in nearby_objects:
+            mem_key = f"{obj['type']}_{obj['x']}_{obj['y']}"
+            if obj["type"] in self.memory.objects:
+                memory_valences[mem_key] = self.memory.objects[obj["type"]].valence
         
         perceived_objects = self.perception.interpret_stimuli(stimuli, self.state, memory_valences)
         
         for obj in perceived_objects:
-            mem_key = f"{obj['type']}_{obj['x']}_{obj['y']}"
-            if mem_key not in memory_valences:
-                self.memory.perceive_object(obj["type"], obj["x"], obj["y"], obj["valence"], obj["salience"])
+            if obj["type"] not in self.memory.objects:
+                self.memory.register_object(obj["type"], tags=[obj["type"]], coordinates=(obj["x"], obj["y"]))
+        
+        # Cherry: Генерация троек только для значимых событий
+        known_types = {obj.name for obj in self.memory.objects.values()}
+        
+        for obj in perceived_objects:
+            clean_tags = [obj["type"]]
+            if obj.get("valence", 0.0) > 0.1:
+                clean_tags.append("positive")
+            elif obj.get("valence", 0.0) < -0.1:
+                clean_tags.append("negative")
+                
+            verb = "see" if obj["distance"] > self.interaction_radius else "interact"
+            
+            if verb == "interact" or obj["type"] not in known_types:
+                self.cherry.generate_triple(
+                    subject="I",
+                    verb=verb,
+                    object_name=obj["type"],
+                    tags=clean_tags,
+                    coordinates=(obj["x"], obj["y"]),
+                    source=LearningSource.DIRECT_EXPERIENCE
+                )
         
         self.state["tension"] = self.needs_system.calculate_tension(self.state["energy"])
         self.state["quasi_need"] = self.needs_system.get_quasi_need(self.state["tension"])
@@ -253,8 +287,8 @@ class FriedNoodlesAgent:
                 
                 if not targets:
                     remembered = self.memory.get_nearest_object_by_type(target_type)
-                    if remembered:
-                        targets = [remembered]
+                    if remembered and remembered.coordinates:
+                        targets = [{"type": target_type, "x": remembered.coordinates[0], "y": remembered.coordinates[1], "distance": 999}]
                 
                 if targets:
                     target = min(targets, key=lambda k: k['distance'])
@@ -295,14 +329,17 @@ class FriedNoodlesAgent:
             self.viz_needs.fig.canvas.flush_events()
             plt.pause(0.01)
             
-        memory_count = len(self.memory.object_memories)
+        memory_count = len(self.memory.objects)
         perception_log = ", ".join([f"{p['type']}({p['valence']}, sal={p['salience']})" for p in perceived_objects]) if perceived_objects else "None"
-        logger.info(f"[Tick {self.tick_count:03d}] Pos=({self.position[0]:.2f}, {self.position[1]:.2f}) | E={self.state['energy']:.2f} T={self.state['tension']:.2f} | Mem={memory_count} | Action: {action}")
+        logger.info(f"{self.agent_emoji} [Tick {self.tick_count:03d}] Pos=({self.position[0]:.2f}, {self.position[1]:.2f}) | E={self.state['energy']:.2f} T={self.state['tension']:.2f} | Mem={memory_count} | Action: {action}")
+        
+        if self.tick_count % 50 == 0:
+            self.memory.save_to_disk()
         
         return self.state.copy()
 
     def run_demo(self, ticks: int = 400):
-        logger.info("️ Setting up environment...")
+        logger.info("🍽️ Setting up environment...")
         
         for _ in range(2):
             fx, fy = random.uniform(5, 18), random.uniform(5, 18)
@@ -319,6 +356,7 @@ class FriedNoodlesAgent:
         summary = self.learning.get_learning_summary()
         logger.info(f"🧠 Learning Summary: {summary}")
         
+        self.memory.save_to_disk()
         if self.enable_debug:
             plt.ioff()
             plt.show()

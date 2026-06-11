@@ -1,0 +1,19 @@
+{
+  "Agent": {
+    "emoji": "👽",
+    "tags": ["alive", "intelligent", "social", "self"],
+    "type": "agent"
+  },
+  "Food": {
+    "emoji": "🍎",
+    "tags": ["edible", "positive"],
+    "type": "object",
+    "default_valence": 0.3
+  },
+  "Rock": {
+    "emoji": "🪨",
+    "tags": ["hard", "neutral"],
+    "type": "object",
+    "default_valence": 0.0
+  }
+}

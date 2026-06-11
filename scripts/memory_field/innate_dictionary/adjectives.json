@@ -1,0 +1,26 @@
+{
+  "edible": {
+    "valence_bias": 0.3,
+    "category": "survival"
+  },
+  "dangerous": {
+    "valence_bias": -0.4,
+    "category": "threat"
+  },
+  "neutral": {
+    "valence_bias": 0.0,
+    "category": "environment"
+  },
+  "hard": {
+    "valence_bias": 0.0,
+    "category": "physical"
+  },
+  "positive": {
+    "valence_bias": 0.5,
+    "category": "emotional"
+  },
+  "negative": {
+    "valence_bias": -0.5,
+    "category": "emotional"
+  }
+}

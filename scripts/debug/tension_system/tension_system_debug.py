@@ -1,35 +1,63 @@
-# scripts/debug/meat_balls/needs_debug.py
+# scripts/debug/tension_system/tension_system_debug.py
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from scripts.debug.shared.styles import DebugStyle
+import matplotlib
+import logging
+
+# ✅ Настраиваем темную тему
+matplotlib.rcParams['axes.facecolor'] = '#1e1e1e'
+matplotlib.rcParams['figure.facecolor'] = '#1e1e1e'
+matplotlib.rcParams['text.color'] = '#ffffff'
+matplotlib.rcParams['axes.labelcolor'] = '#ffffff'
+matplotlib.rcParams['xtick.color'] = '#ffffff'
+matplotlib.rcParams['ytick.color'] = '#ffffff'
+
+logger = logging.getLogger(__name__)
 
 class NeedsDebug:
-    """
-    Упрощенная визуализация: только две полоски (Energy и Tension).
-    """
+    """Визуализация системы потребностей (Meat Balls)."""
+
     def __init__(self):
-        # Небольшое окно для двух баров
-        self.fig, self.ax = plt.subplots(figsize=(5, 3))
-        self.fig.set_facecolor(DebugStyle.BACKGROUND)
-        self.ax.set_facecolor(DebugStyle.BACKGROUND)
-
-        # Скрываем оси, тики и рамки для чистоты
+        self.fig, self.ax = plt.subplots(figsize=(6, 4))
+        self.ax.set_xlim(0, 100)
+        self.ax.set_ylim(0, 100)
         self.ax.axis('off')
-        self.ax.set_xlim(0, 1)
-        self.ax.set_ylim(0, 1)
+        
+        # Темный фон
+        self.ax.set_facecolor('#1e1e1e')
+        self.fig.patch.set_facecolor('#1e1e1e')
+        
+        logger.info("🔧 NeedsDebug initialized (Dark Theme)")
 
-        # --- ENERGY BAR (Верхняя полоска, Зеленая) ---
-        self.ax.text(0.05, 0.65, "ENERGY", color='white', ha='left', va='center', fontweight='bold')
-        self.energy_bar = patches.Rectangle((0.05, 0.55), 0, 0.15, facecolor=DebugStyle.AGENT_BODY)
-        self.ax.add_patch(self.energy_bar)
+    def update(self, tick: int, energy: float, tension: float, quasi_need: str):
+        self.ax.clear()
+        self.ax.set_xlim(0, 100)
+        self.ax.set_ylim(0, 100)
+        self.ax.axis('off')
+        
+        # Темный фон
+        self.ax.set_facecolor('#1e1e1e')
+        self.fig.patch.set_facecolor('#1e1e1e')
+        
+        # Energy bar (зеленый)
+        energy_width = energy * 80
+        self.ax.add_patch(plt.Rectangle((10, 60), energy_width, 15, 
+                                         facecolor='#4CAF50', alpha=0.8))
+        self.ax.text(10, 67.5, "ENERGY", color='white', fontsize=10, fontweight='bold')
+        
+        # Tension bar (красный)
+        tension_width = tension * 80
+        self.ax.add_patch(plt.Rectangle((10, 35), tension_width, 15, 
+                                         facecolor='#f44336', alpha=0.8))
+        self.ax.text(10, 42.5, "TENSION", color='white', fontsize=10, fontweight='bold')
+        
+        # Quasi-need text
+        need_text = quasi_need if quasi_need else "None"
+        self.ax.text(50, 15, f"Need: {need_text}", color='white', 
+                     fontsize=12, ha='center', fontweight='bold')
+        
+        # Tick counter
+        self.ax.text(50, 85, f"Tick: {tick}", color='white', 
+                     fontsize=14, ha='center', fontweight='bold')
 
-        # --- TENSION BAR (Нижняя полоска, Красная) ---
-        self.ax.text(0.05, 0.35, "TENSION", color='white', ha='left', va='center', fontweight='bold')
-        self.tension_bar = patches.Rectangle((0.05, 0.25), 0, 0.15, facecolor='#e74c3c')
-        self.ax.add_patch(self.tension_bar)
-
-    def update(self, tick, energy, tension, quasi_need):
-        """Обновляет ширину полосок (игнорирует tick и quasi_need)."""
-        # Максимальная ширина 0.85 (чтобы был отступ справа)
-        self.energy_bar.set_width(energy * 0.85)
-        self.tension_bar.set_width(tension * 0.85)
+    def close(self):
+        plt.close(self.fig)

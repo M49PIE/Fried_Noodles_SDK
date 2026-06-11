@@ -1,0 +1,339 @@
+{
+  "triples": [
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.604699984256231,
+        9.441176918097934
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_6397"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.604699984256231,
+        9.441176918097934
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9917"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        6.355852658204997,
+        10.920411227300512
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_6781"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.950448907592442,
+        8.074390613677405
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_445"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.950448907592442,
+        8.074390613677405
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_1655"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        9.066109469587683,
+        14.331569262395055
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_6470"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        4.599046399389041,
+        1.3203458971085518
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_7122"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.087744781948765,
+        11.929649032351108
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9476"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.087744781948765,
+        11.929649032351108
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_2150"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        5.145845854258901,
+        15.737135990822264
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_1623"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        2.911556436606613,
+        10.17297376536779
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_2289"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        2.911556436606613,
+        10.17297376536779
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_998"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        6.195655982669152,
+        14.155760271068244
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_7841"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        2.839968433419367,
+        10.322110366618029
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9570"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        2.839968433419367,
+        10.322110366618029
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_3570"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.19427655584345,
+        9.37518807482035
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_2639"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.19427655584345,
+        9.37518807482035
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_6339"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        3.638511599104544,
+        14.741403027235432
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_2322"
+    }
+  ]
+}

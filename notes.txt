@@ -1,3 +1,7 @@
+C:\Users\Xiaomi>D:
+D:\>cd D:\Fried_Noodles
+D:\Fried_Noodles>python -m scripts.core.agent
+
 git add .
 git commit -m "..."
 git push
