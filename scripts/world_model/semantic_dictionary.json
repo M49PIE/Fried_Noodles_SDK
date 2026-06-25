@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "description": "Semantic dictionary for Fried Noodles SDK — verbs and tags for combinatorial speech generation",
+    "language": "en"
+  },
+  "verbs": {
+    "sensory": [
+      "sense", "react", "yawn", "sneeze", "cough", "hiccup", "pulsate",
+      "detect", "see", "hear", "touch", "sniff", "inhale", "taste",
+      "bite", "tickle", "perceive", "observe", "feel", "notice",
+      "recognize", "identify", "scan", "filter", "amplify", "dampen"
+    ],
+    "physiology": [
+      "want", "crave", "starve", "suffer", "tire", "rest", "recover",
+      "tense", "sleep", "wake", "accumulate", "discharge", "survive",
+      "endure", "choke", "sweat", "shake", "freeze", "beat", "satisfy",
+      "fulfill", "disappoint", "surprise", "heal", "wound", "exhaust",
+      "refresh", "hunger", "thirst", "breathe", "tremble"
+    ],
+    "cognitive": [
+      "think", "imagine", "foresee", "notice", "err", "decide", "choose",
+      "prefer", "refuse", "evaluate", "count", "agree", "object", "suggest",
+      "influence", "study", "explore", "learn", "know", "memorize", "recall",
+      "forget", "repress", "search", "find", "lose", "name", "label",
+      "interpret", "deduce", "induce", "abstract", "concretize", "argue",
+      "prove", "doubt", "believe", "suspect", "analyze", "synthesize"
+    ],
+    "emotional": [
+      "worry", "fear", "anger", "hate", "despise", "envy", "shame",
+      "embarrass", "delight", "marvel", "grieve", "offend", "regret",
+      "repent", "love", "adore", "like", "rejoice", "celebrate", "sorrow",
+      "lament", "despair", "hope", "trust", "distrust", "admire", "resent",
+      "cherish", "loathe", "panic", "calm", "thrill", "dread", "sympathize"
+    ],
+    "movement": [
+      "walk", "stride", "run", "jump", "crawl", "swim", "fly", "ride",
+      "push", "pull", "carry", "lead", "drive", "pursue", "approach",
+      "retreat", "leave", "arrive", "enter", "exit", "fall", "stand",
+      "sit", "lie", "flip", "tremble", "sway", "slide", "stumble",
+      "wander", "freeze", "move", "dance", "limp", "slap", "march",
+      "flee", "chase", "dodge", "crouch", "sneak", "leap", "descend", "ascend"
+    ],
+    "manipulation": [
+      "do", "create", "build", "destroy", "explode", "cut", "chop", "stab",
+      "open", "close", "lock", "unlock", "ignite", "extinguish", "melt",
+      "heat", "cool", "cook", "eat", "drink", "give", "take", "catch",
+      "rob", "bypass", "overcome", "block", "craft", "repair", "break",
+      "smash", "assemble", "disassemble", "mix", "separate", "fold",
+      "unwrap", "wrap", "pour", "stir", "grind", "carve"
+    ],
+    "social": [
+      "cooperate", "unite", "betray", "forgive", "revenge", "sacrifice",
+      "support", "persuade", "manipulate", "dominate", "submit", "lead",
+      "follow", "ignore", "acknowledge", "reject", "accept", "speak",
+      "whisper", "shout", "growl", "howl", "moan", "sing", "mutter",
+      "silent", "scold", "praise", "thank", "apologize", "accuse",
+      "condemn", "complain", "lament", "cry", "read", "write", "greet",
+      "farewell", "flatter", "insult", "tease", "negotiate", "bargain",
+      "promise", "threaten", "swear", "confess"
+    ],
+    "economic": [
+      "buy", "sell", "exchange", "save", "spend", "pay", "trade", "barter",
+      "invest", "loan", "borrow", "repay", "earn", "waste", "hoard",
+      "steal", "confiscate", "donate", "inherit", "inherit", "price",
+      "discount", "overcharge", "underpay", "reward", "punish", "fine",
+      "tax", "auction", "bid", "negotiate_price", "value", "devalue"
+    ],
+    "temporal": [
+      "slow", "accelerate", "pause", "cycle", "postpone", "extend",
+      "shorten", "synchronize", "delay", "precede", "coincide", "alternate",
+      "repeat", "resume", "interrupt", "halt", "complete", "initiate",
+      "terminate", "schedule", "await", "anticipate", "retrace", "project",
+      "prolong", "abbreviate", "loop", "trigger", "queue", "defer",
+      "prioritize", "overlap", "sequence"
+    ],
+    "spatial": [
+      "surround", "contain", "divide", "adjoin", "intersect", "touch",
+      "connect", "disconnect", "shift", "turn", "activate", "deactivate",
+      "suppress", "block", "prevent", "avoid", "cancel", "shun", "align",
+      "center", "displace", "rotate", "orient", "flank", "encircle",
+      "enclose", "penetrate", "cross", "bypass", "corner", "isolate",
+      "cluster", "scatter", "stack", "nest", "embed"
+    ]
+  },
+  "tags": {
+    "physical": [
+      "hard", "soft", "elastic", "flexible", "fragile", "sturdy", "dense",
+      "porous", "light", "heavy", "compact", "hollow", "filled", "liquid",
+      "gaseous", "solid", "viscous", "sticky", "slippery", "greasy",
+      "dry", "wet", "damp", "magnetic", "conductive", "fusible",
+      "flammable", "explosive", "stable", "reactive", "inert", "organic",
+      "synthetic", "crystalline", "amorphous"
+    ],
+    "spatial": [
+      "internal", "external", "visible", "hidden", "protected", "vulnerable",
+      "front", "back", "left", "right", "top", "bottom", "near", "far",
+      "adjacent", "opposite", "central", "peripheral", "open", "closed",
+      "accessible", "inaccessible", "free", "limited", "infinite", "finite",
+      "isolated", "connected", "elevated", "sunken", "exposed", "sheltered",
+      "inner", "outer", "surface", "deep"
+    ],
+    "colors": [
+      "red", "orange", "yellow", "green", "blue", "purple", "pink",
+      "brown", "gold", "silver", "bronze", "copper", "steel", "gray",
+      "black", "white", "crimson", "scarlet", "emerald", "azure", "indigo",
+      "violet", "beige", "ivory", "amber", "turquoise", "maroon", "navy",
+      "olive", "rust", "cream", "charcoal", "pastel", "neon", "matte",
+      "glossy", "translucent", "opaque"
+    ],
+    "visual_shape": [
+      "delicate", "juicy", "acidic", "toxic", "dark", "bright", "round",
+      "oval", "square", "rectangular", "triangular", "rhombic", "hexagonal",
+      "spiral", "straight", "curved", "broken", "wavy", "simple", "complex",
+      "symmetrical", "asymmetrical", "jagged", "smooth", "angular", "flat",
+      "convex", "concave", "bulky", "sleek", "ornate", "plain", "twisted",
+      "layered"
+    ],
+    "size": [
+      "large", "huge", "enormous", "giant", "colossal", "small", "tiny",
+      "petite", "miniature", "shallow", "big", "medium", "long", "short",
+      "tall", "low", "wide", "narrow", "thick", "thin", "glowing",
+      "reflective", "massive", "mini", "oversized", "undersized", "compact",
+      "bulky", "slender", "stout", "vast", "minuscule"
+    ],
+    "sound": [
+      "loud", "quiet", "crunchy", "clicking", "knocking", "ringing", "bass",
+      "hoarse", "hissing", "roaring", "whispering", "thunderous", "muffled",
+      "sharp", "dull", "melodic", "discordant", "rhythmic", "erratic",
+      "echoing", "piercing", "rumbling", "tinkling", "clanging", "buzzing",
+      "squeaky", "grating", "soothing"
+    ],
+    "smell_taste": [
+      "aromatic", "stinky", "smoky", "spicy", "sharp", "sweet", "bitter",
+      "sour", "faint", "strong", "floral", "fruity", "herbal", "woody",
+      "coniferous", "minty", "menthol", "coffee", "chocolate", "vanilla",
+      "bready", "meaty", "fishy", "cheesy", "garlic", "onion", "apple",
+      "citrus", "strawberry", "raspberry", "cherry", "honey", "swampy",
+      "marine", "river", "ozone", "dusty", "earthy", "clay", "putrid",
+      "pungent", "tangy", "savory", "salty"
+    ],
+    "tactile": [
+      "smooth", "rough", "bumpy", "matte", "prickly", "fluffy", "hairy",
+      "bald", "cold", "warm", "hot", "silky", "velvety", "coarse", "gritty",
+      "spongy", "rubbery", "leathery", "metallic", "glassy", "wooden",
+      "waxy", "oily", "powdery", "crusty", "icy", "scorching", "numbing",
+      "tickling", "soothing"
+    ],
+    "functional": [
+      "working", "broken", "disposable", "reusable", "expensive", "cheap",
+      "unique", "standard", "strange", "healthy", "sick", "sturdy", "weak",
+      "strong", "past", "present", "future", "important", "main",
+      "secondary", "rare", "common", "legendary", "mythic", "cursed",
+      "blessed", "authentic", "forged", "rustic", "ancient", "modern",
+      "archaic", "functional", "decorative", "ritual", "everyday"
+    ],
+    "emotional_social": [
+      "joyful", "sad", "embarrassed", "shameful", "frightened", "ecstatic",
+      "aggressive", "overconfident", "shy", "timid", "modest", "humble",
+      "meek", "submissive", "indifferent", "smart", "stupid", "polite",
+      "rude", "sociable", "silent", "eloquent", "kind", "evil", "generous",
+      "greedy", "alive", "dead", "honest", "dishonest", "loyal", "treacherous",
+      "compassionate", "cruel", "wise", "foolish", "charismatic", "awkward",
+      "trustworthy", "suspicious", "heroic", "villainous", "noble", "ignoble"
+    ]
+  },
+  "usage_notes": {
+    "combinatorial_speech": "Combine verb + tagged object for dynamic dialogue: 'I [eat] [tasty] [apple]'",
+    "emotion_mapping": "Use emotional_social tags to modulate speech tone and sentence structure",
+    "spatial_reasoning": "Use spatial tags for navigation-based dialogue: 'I see [distant] [tower]'",
+    "causal_learning": "Track verb→tag correlations for emergent learning"
+  }
+}

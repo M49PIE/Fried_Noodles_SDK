@@ -334,6 +334,62 @@
       "is_relative": false,
       "context": "",
       "id": "I_interact_Food_2322"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Food",
+      "tags": [
+        "Food",
+        "positive"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        13.745076366905863,
+        9.189786212498444
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Food_7575"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        5.290382314902136,
+        10.467154936853106
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_1151"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock",
+        "negative"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        5.290382314902136,
+        10.467154936853106
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9305"
     }
   ]
 }

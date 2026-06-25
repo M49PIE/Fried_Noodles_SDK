@@ -1,41 +1,41 @@
 {
-  "Rock": {
-    "name": "Rock",
-    "tags": [
-      "neutral",
-      "Rock",
-      "hard",
-      "negative",
-      "rock"
-    ],
-    "focusable_parts": {},
-    "coordinates": [
-      7.19427655584345,
-      9.37518807482035
-    ],
-    "last_seen_tick": 0,
-    "valence": -0.3,
-    "salience": 0.8,
-    "is_relative": false,
-    "emoji": "🪨"
-  },
   "Food": {
     "name": "Food",
     "tags": [
       "Food",
-      "food",
       "edible",
-      "positive"
+      "positive",
+      "food"
     ],
     "focusable_parts": {},
     "coordinates": [
-      3.638511599104544,
-      14.741403027235432
+      13.745076366905863,
+      9.189786212498444
     ],
     "last_seen_tick": 0,
-    "valence": 0.657,
-    "salience": 1.61,
+    "valence": 0.942,
+    "salience": 1.71,
     "is_relative": false,
     "emoji": "🍎"
+  },
+  "Rock": {
+    "name": "Rock",
+    "tags": [
+      "Rock",
+      "rock",
+      "hard",
+      "negative",
+      "neutral"
+    ],
+    "focusable_parts": {},
+    "coordinates": [
+      5.290382314902136,
+      10.467154936853106
+    ],
+    "last_seen_tick": 0,
+    "valence": -0.3,
+    "salience": 0.84,
+    "is_relative": false,
+    "emoji": "🪨"
   }
 }
