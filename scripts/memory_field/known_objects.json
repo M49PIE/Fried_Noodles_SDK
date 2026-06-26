@@ -1,41 +1,42 @@
 {
-  "Food": {
-    "name": "Food",
-    "tags": [
-      "Food",
-      "edible",
-      "positive",
-      "food"
-    ],
-    "focusable_parts": {},
-    "coordinates": [
-      13.745076366905863,
-      9.189786212498444
-    ],
-    "last_seen_tick": 0,
-    "valence": 0.942,
-    "salience": 1.71,
-    "is_relative": false,
-    "emoji": "🍎"
-  },
   "Rock": {
     "name": "Rock",
     "tags": [
-      "Rock",
-      "rock",
       "hard",
-      "negative",
+      "Rock",
       "neutral"
     ],
     "focusable_parts": {},
     "coordinates": [
-      5.290382314902136,
-      10.467154936853106
+      9.448556055608872,
+      1.2744797907633336
     ],
     "last_seen_tick": 0,
-    "valence": -0.3,
-    "salience": 0.84,
+    "valence": 0.0,
+    "salience": 0.0,
     "is_relative": false,
     "emoji": "🪨"
+  },
+  "Apple": {
+    "name": "Apple",
+    "tags": [
+      "Apple",
+      "tasty",
+      "natural",
+      "renewable",
+      "organic",
+      "healthy",
+      "food"
+    ],
+    "focusable_parts": {},
+    "coordinates": [
+      10.667354751588748,
+      1.8818299421806903
+    ],
+    "last_seen_tick": 0,
+    "valence": 0.51,
+    "salience": 1.0,
+    "is_relative": false,
+    "emoji": ""
   }
 }
