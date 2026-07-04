@@ -534,6 +534,222 @@
       "is_relative": false,
       "context": "",
       "id": "I_interact_Rock_6014"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        11.552056223795894,
+        8.48762572928219
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9089"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        12.449017746007573,
+        6.206756402847974
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_6061"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        11.234730042227572,
+        16.567091738413147
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_8252"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        6.976501605689142,
+        6.261736809588845
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_2591"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        9.391392051173229,
+        3.7927101083477908
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_5154"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        8.739318273924763,
+        8.734775254561185
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_3285"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        7.599635340817055,
+        14.371961078279746
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_254"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        3.155421859704788,
+        14.348162734638029
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_6607"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        6.592179590383214,
+        14.538142672622955
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_5241"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        5.6414069063393635,
+        15.601330563411206
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_5355"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Rock",
+      "tags": [
+        "Rock"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        3.1553514391839474,
+        11.729338031751954
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Rock_9429"
+    },
+    {
+      "subject": "I",
+      "verb": "interact",
+      "object": "Apple",
+      "tags": [
+        "Apple"
+      ],
+      "source": "direct_experience",
+      "confidence": 0.7,
+      "verified": true,
+      "coordinates": [
+        10.214424438617723,
+        4.930195214719726
+      ],
+      "is_relative": false,
+      "context": "",
+      "id": "I_interact_Apple_2624"
     }
   ]
 }

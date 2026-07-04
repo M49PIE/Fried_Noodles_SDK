@@ -3,13 +3,12 @@
     "name": "Rock",
     "tags": [
       "hard",
-      "Rock",
       "neutral"
     ],
     "focusable_parts": {},
     "coordinates": [
-      9.448556055608872,
-      1.2744797907633336
+      15.015546156971661,
+      8.51834444206544
     ],
     "last_seen_tick": 0,
     "valence": 0.0,
@@ -20,18 +19,17 @@
   "Apple": {
     "name": "Apple",
     "tags": [
-      "Apple",
-      "tasty",
-      "natural",
-      "renewable",
-      "organic",
+      "food",
       "healthy",
-      "food"
+      "tasty",
+      "organic",
+      "renewable",
+      "natural"
     ],
     "focusable_parts": {},
     "coordinates": [
-      10.667354751588748,
-      1.8818299421806903
+      8.219551538999188,
+      9.110259675183523
     ],
     "last_seen_tick": 0,
     "valence": 0.51,

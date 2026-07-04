@@ -60,12 +60,12 @@ class Barrier(Entity):
 # ============================================================
 
 class Apple(Collectible):
-    """Яблоко - восстанавливает энергию, исчезает через 20 сек"""
+    """Яблоко - восстанавливает энергию, исчезает через 60 сек (было 20)"""
     def __init__(self, position: Tuple[float, float]):
         super().__init__(
             name="Apple", position=position,
             tags=["food", "organic", "renewable", "tasty", "natural", "healthy"],
-            value=0.3, despawn_time=20.0
+            value=0.3, despawn_time=60.0  # ⬆️ УВЕЛИЧИЛ с 20 до 60 секунд
         )
 
 
@@ -80,9 +80,9 @@ class Rock(Collectible):
 
 
 class Wall(Barrier):
-    """Стена лабиринта"""
+    """Стена - непроходимый барьер"""
     def __init__(self, position: Tuple[float, float]):
         super().__init__(
             name="Wall", position=position,
-            tags=["barrier", "obstacle", "wall", "hard", "static"]
+            tags=["barrier", "solid", "impassable"]
         )

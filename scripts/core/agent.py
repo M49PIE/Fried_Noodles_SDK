@@ -5,6 +5,7 @@ import math
 import random
 from pathlib import Path
 import matplotlib.pyplot as plt
+from typing import Optional
 
 # Core systems
 from scripts.tension_system.tension_system import NeedsSystem
@@ -14,8 +15,8 @@ from scripts.perception_filter.perception_filter import PerceptionSystem
 from scripts.action_executor.action_executor import BehaviorSystem
 from scripts.memory_field.memory_field import MemoryField, LearningSource
 from scripts.memory_field.field import PsychologicalField
+from scripts.decision_engine.thinking import ThinkingSystem, MentalPath
 from scripts.valence_update.valence_update import LearningSystem
-from scripts.decision_engine.decision_engine import ThinkingSystem, ActionType
 from scripts.locutionary_output.locutionary_output import LocutionaryOutput
 
 # Debug tools
@@ -45,17 +46,16 @@ class FriedNoodlesAgent:
         # 1. Инициализация базовых систем
         self.needs_system = NeedsSystem(self.config)
         self.environment = WorldModel()
-        self.sensation = SensationSystem(perception_radius=30.0)  # 🔥 Увеличенный радиус
+        self.sensation = SensationSystem(perception_radius=30.0)
         self.perception = PerceptionSystem(self.config)
         self.action_executor = BehaviorSystem()
         
-        # 2. Инициализация памяти и ПОЛЯ
+        # 2. Инициализация памяти, поля и мышления
         self.memory = MemoryField(data_dir="scripts/memory_field")
         self.field = PsychologicalField()
+        self.thinking = ThinkingSystem(step_size=0.4)
         self.cherry = LocutionaryOutput(self.memory)
-        
         self.learning = LearningSystem(learning_rate=0.3)
-        self.thinking = ThinkingSystem()
         
         # 3. Инициализация визуализации
         if self.enable_debug:
@@ -102,9 +102,10 @@ class FriedNoodlesAgent:
         interactable = [obj for obj in nearby_objects if obj["distance"] <= self.interaction_radius]
         if not interactable:
             return False, "neutral"
-            
-        interactable.sort(key=lambda x: x["distance"])
-        target = interactable[0]
+        
+        food_targets = [obj for obj in interactable if obj["type"] in ("Food", "Apple", "Bread")]
+        target = min(food_targets, key=lambda x: x["distance"]) if food_targets else min(interactable, key=lambda x: x["distance"])
+        
         old_valence = target.get("valence", 0.0)
         
         if target["type"] in ("Food", "Apple", "Bread"):
@@ -126,7 +127,10 @@ class FriedNoodlesAgent:
             if entity_to_remove: self.environment.remove_entity(entity_to_remove)
             
             self.learning.log_event(tick=self.tick_count, action="Consume", target_type=target["type"], outcome="success", valence_before=old_valence, valence_after=new_valence)
-            logger.info(f"🍽️ Ate {target['type']}! Energy +{restore:.2f} | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            logger.info(f"️ Ate {target['type']}! Energy +{restore:.2f} | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            
+            # 🗣️ ТРИГГЕР РЕЧИ: ПОЕЛ
+            self.cherry.speak("eat", target["type"], target.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
             return True, "success"
             
         elif target["type"] == "Rock":
@@ -136,6 +140,10 @@ class FriedNoodlesAgent:
             
             self.learning.log_event(tick=self.tick_count, action="Investigate", target_type="Rock", outcome="failure", valence_before=old_valence, valence_after=new_valence)
             logger.info(f"🪨 Investigated Rock: no value | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            
+            # 🗣️ ТРИГГЕР РЕЧИ: НЕУДАЧА (только если это первый раз или редко)
+            if old_valence == 0.0:
+                self.cherry.speak("fail", "Rock", target.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
             return False, "failure"
             
         return False, "neutral"
@@ -144,20 +152,18 @@ class FriedNoodlesAgent:
         self.wander_direction = (random.uniform(-1, 1), random.uniform(-1, 1))
         self.wander_timer = random.randint(5, 15)
 
-    def _convert_action_to_string(self, action_candidate) -> str:
-        if action_candidate.action_type == ActionType.APPROACH: return f"Approach: {action_candidate.target['type']}"
-        elif action_candidate.action_type == ActionType.INVESTIGATE: return f"Investigate: {action_candidate.target['type']}"
-        elif action_candidate.action_type == ActionType.CONSUME: return "Consume: Success"
-        elif action_candidate.action_type == ActionType.WANDER: return "FieldAction: Wander"
-        else: return "Idle"
+    def _find_best_target(self, nearby_objects: list) -> Optional[dict]:
+        if self.state["energy"] >= 0.6: return None
+        food = [o for o in nearby_objects if o['type'] == 'Apple']
+        return min(food, key=lambda x: x['distance']) if food else None
 
     def tick(self) -> dict:
         self.tick_count += 1
         self.environment.tick()
         
+        # Энергия и напряжение
         decay = self.config.get("homeostasis", {}).get("energy", {}).get("decay_rate", 0.01)
         self.state["energy"] = max(0.0, self.state["energy"] - decay)
-        
         self.state["tension"] = self.needs_system.calculate_tension(self.state["energy"])
         self.state["quasi_need"] = self.needs_system.get_quasi_need(self.state["tension"])
         
@@ -167,7 +173,8 @@ class FriedNoodlesAgent:
         
         self.memory.update_agent_position(self.position[0], self.position[1])
         
-        nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 30.0)  # 🔥 Увеличенный радиус
+        # Восприятие
+        nearby_objects = self.environment.get_nearby_objects(self.position[0], self.position[1], 30.0)
         stimuli = self.sensation.filter_stimuli(nearby_objects)
         
         memory_valences = {}
@@ -177,51 +184,63 @@ class FriedNoodlesAgent:
         
         perceived_objects = self.perception.interpret_stimuli(stimuli, self.state, memory_valences)
         
+        # 🗣️ ТРИГГЕР РЕЧИ: ПЕРВЫЙ КОНТАКТ
         for obj in perceived_objects:
             if obj["type"] not in self.memory.objects:
                 self.memory.register_object(obj["type"], tags=obj.get("tags", []), coordinates=(obj["x"], obj["y"]))
+                # Говорим только если это действительно новый тип объекта
+                self.cherry.speak("first_see", obj["type"], obj.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
 
-        # 🔥 ОБНОВЛЯЕМ ПОЛЕ КАЖДЫЙ 5-Й ТИК
-        if self.tick_count % 5 == 0:
-            self.field.update(perceived_objects)
+        # 🗣️ ТРИГГЕР РЕЧИ: ГОЛОД (раз в 50 тиков если голоден)
+        if self.state["tension"] > 0.4 and (self.tick_count - self.cherry.last_hunger_tick > 50):
+            self.cherry.speak("hunger", "", [], self.state["energy"], self.state["tension"], self.tick_count)
+            self.cherry.last_hunger_tick = self.tick_count
 
-        # DECISION LOGIC
-        if self.state["energy"] < 0.6:
-            raw_food = [o for o in nearby_objects if o['type'] == 'Apple']
-            if raw_food:
-                closest_food = min(raw_food, key=lambda x: x['distance'])
-                if closest_food['distance'] <= self.interaction_radius:
-                    acted, _ = self._try_interact(nearby_objects)
-                    action = "Consume: Success" if acted else "Approach: Apple"
-                else: action = "Approach: Apple"
-            else: action = "FieldAction: Wander"
-        else:
-            action = "FieldAction: Wander"
+        # 🔥 ОБНОВЛЕНИЕ ПОЛЯ КАЖДЫЙ ТИК
+        self.field.update(perceived_objects)
 
-        # MOVEMENT
-        if action == "Approach: Apple":
-            targets = [obj for obj in nearby_objects if obj['type'] == 'Apple']
-            if targets:
-                target = min(targets, key=lambda k: k['distance'])
+        # 🧠 МЫШЛЕНИЕ + ДВИЖЕНИЕ
+        action = "Wander"
+        target = self._find_best_target(nearby_objects)
+        
+        if target and self.state["tension"] >= 0.1:
+            mental_result = self.thinking.simulate_full_path(
+                start_pos=self.position,
+                target=target,
+                field_objects=self.field.get_all()
+            )
+            
+            if mental_result.success:
                 dx = target['x'] - self.position[0]
                 dy = target['y'] - self.position[1]
                 dist = math.sqrt(dx**2 + dy**2)
+                
                 if dist <= self.interaction_radius:
                     acted, _ = self._try_interact(nearby_objects)
-                    if acted: action = "Consume: Success"
+                    action = "Consume: Success" if acted else "Approach"
                 elif dist > 0.1:
                     move_x = (dx / dist) * self.speed
                     move_y = (dy / dist) * self.speed
                     self.position = (self.position[0] + move_x, self.position[1] + move_y)
+                    action = "Approach"
+                else:
+                    action = "Idle"
+            else:
+                action = "Wander (Blocked)"
         
-        elif action == "FieldAction: Wander":
+        # Блуждание
+        if action == "Wander" or action == "Wander (Blocked)":
             self.wander_timer -= 1
-            if self.wander_timer <= 0: self._update_wander_direction()
+            if self.wander_timer <= 0:
+                self._update_wander_direction()
+            
             dx, dy = self.wander_direction
             norm = math.sqrt(dx**2 + dy**2)
             if norm > 0: dx, dy = dx / norm, dy / norm
+            
             move_x = dx * self.speed * 0.5
             move_y = dy * self.speed * 0.5
+            
             new_x = max(0, min(20, self.position[0] + move_x))
             new_y = max(0, min(20, self.position[1] + move_y))
             self.position = (new_x, new_y)
@@ -243,14 +262,6 @@ class FriedNoodlesAgent:
             self.viz_field.update(self.field.get_all(), self.position)
             plt.pause(0.01)
         
-        # Cherry: Speech
-        known_types = {obj.name for obj in self.memory.objects.values()}
-        for obj in perceived_objects:
-            clean_tags = obj.get("tags", [obj["type"]])
-            verb = "see" if obj["distance"] > self.interaction_radius else "interact"
-            if verb == "interact" or obj["type"] not in known_types:
-                self.cherry.generate_triple(subject="I", verb=verb, object_name=obj["type"], tags=clean_tags, coordinates=(obj["x"], obj["y"]), source=LearningSource.DIRECT_EXPERIENCE)
-        
         memory_count = len(self.memory.objects)
         logger.info(f"{self.agent_emoji} [Tick {self.tick_count:03d}] Pos=({self.position[0]:.2f}, {self.position[1]:.2f}) | E={self.state['energy']:.2f} T={self.state['tension']:.2f} | Field={len(self.field.get_all())} | Action: {action}")
         
@@ -261,7 +272,7 @@ class FriedNoodlesAgent:
         logger.info("️ Setting up environment...")
         for _ in range(ticks): self.tick()
         summary = self.learning.get_learning_summary()
-        logger.info(f" Learning Summary: {summary}")
+        logger.info(f"🧠 Learning Summary: {summary}")
         self.memory.save_to_disk()
         self.field.clear()
         if self.enable_debug:
