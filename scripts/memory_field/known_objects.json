@@ -7,8 +7,8 @@
     ],
     "focusable_parts": {},
     "coordinates": [
-      15.015546156971661,
-      8.51834444206544
+      11.558331002700893,
+      8.79483197849851
     ],
     "last_seen_tick": 0,
     "valence": 0.0,
@@ -19,17 +19,17 @@
   "Apple": {
     "name": "Apple",
     "tags": [
-      "food",
-      "healthy",
       "tasty",
+      "healthy",
+      "food",
       "organic",
       "renewable",
       "natural"
     ],
     "focusable_parts": {},
     "coordinates": [
-      8.219551538999188,
-      9.110259675183523
+      8.97677598639679,
+      12.077192474291158
     ],
     "last_seen_tick": 0,
     "valence": 0.51,

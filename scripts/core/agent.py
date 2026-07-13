@@ -21,8 +21,7 @@ from scripts.locutionary_output.locutionary_output import LocutionaryOutput
 
 # Debug tools
 from scripts.debug.world_model.world_model_debug import EnvironmentDebug
-from scripts.debug.tension_system.tension_system_debug import NeedsDebug
-from scripts.debug.memory_field.field_debug import FieldDebug
+from scripts.debug.debug_interface import UnifiedDebug  # 🔥 НОВЫЙ ИМПОРТ
 
 logger = logging.getLogger(__name__)
 
@@ -63,10 +62,9 @@ class FriedNoodlesAgent:
                 innate_objects=self.memory.innate_objects, 
                 icon_dir="scripts/world_model/icons"
             )
-            self.viz_needs = NeedsDebug()
-            self.viz_field = FieldDebug()
+            self.viz = UnifiedDebug()  # 🔥 ОБЪЕДИНЁННЫЙ ДЕБАГ
             plt.ion()
-            logger.info(" Debug visualizations enabled")
+            logger.info("🔧 Debug visualizations enabled")
         
         # 4. Данные агента
         agent_data = self.memory.innate_objects.get("Agent", {})
@@ -127,7 +125,7 @@ class FriedNoodlesAgent:
             if entity_to_remove: self.environment.remove_entity(entity_to_remove)
             
             self.learning.log_event(tick=self.tick_count, action="Consume", target_type=target["type"], outcome="success", valence_before=old_valence, valence_after=new_valence)
-            logger.info(f"️ Ate {target['type']}! Energy +{restore:.2f} | Valence: {old_valence:.2f} → {new_valence:.2f}")
+            logger.info(f"🍽️ Ate {target['type']}! Energy +{restore:.2f} | Valence: {old_valence:.2f} → {new_valence:.2f}")
             
             # 🗣️ ТРИГГЕР РЕЧИ: ПОЕЛ
             self.cherry.speak("eat", target["type"], target.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
@@ -141,7 +139,7 @@ class FriedNoodlesAgent:
             self.learning.log_event(tick=self.tick_count, action="Investigate", target_type="Rock", outcome="failure", valence_before=old_valence, valence_after=new_valence)
             logger.info(f"🪨 Investigated Rock: no value | Valence: {old_valence:.2f} → {new_valence:.2f}")
             
-            # 🗣️ ТРИГГЕР РЕЧИ: НЕУДАЧА (только если это первый раз или редко)
+            # 🗣️ ТРИГГЕР РЕЧИ: НЕУДАЧА (только если это первый раз)
             if old_valence == 0.0:
                 self.cherry.speak("fail", "Rock", target.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
             return False, "failure"
@@ -188,7 +186,6 @@ class FriedNoodlesAgent:
         for obj in perceived_objects:
             if obj["type"] not in self.memory.objects:
                 self.memory.register_object(obj["type"], tags=obj.get("tags", []), coordinates=(obj["x"], obj["y"]))
-                # Говорим только если это действительно новый тип объекта
                 self.cherry.speak("first_see", obj["type"], obj.get("tags", []), self.state["energy"], self.state["tension"], self.tick_count)
 
         # 🗣️ ТРИГГЕР РЕЧИ: ГОЛОД (раз в 50 тиков если голоден)
@@ -255,12 +252,15 @@ class FriedNoodlesAgent:
             self.viz_plate.fig.canvas.draw()
             self.viz_plate.fig.canvas.flush_events()
             
-            self.viz_needs.update(self.tick_count, self.state["energy"], self.state["tension"], self.state["quasi_need"])
-            self.viz_needs.fig.canvas.draw()
-            self.viz_needs.fig.canvas.flush_events()
-            
-            self.viz_field.update(self.field.get_all(), self.position)
-            plt.pause(0.01)
+            # 🔥 ОБНОВЛЕНИЕ ОБЪЕДИНЁННОГО ИНТЕРФЕЙСА
+            self.viz.update(
+                tick=self.tick_count,
+                energy=self.state["energy"],
+                tension=self.state["tension"],
+                quasi_need=self.state["quasi_need"],
+                field_objects=self.field.get_all(),
+                agent_pos=self.position
+            )
         
         memory_count = len(self.memory.objects)
         logger.info(f"{self.agent_emoji} [Tick {self.tick_count:03d}] Pos=({self.position[0]:.2f}, {self.position[1]:.2f}) | E={self.state['energy']:.2f} T={self.state['tension']:.2f} | Field={len(self.field.get_all())} | Action: {action}")
@@ -276,6 +276,7 @@ class FriedNoodlesAgent:
         self.memory.save_to_disk()
         self.field.clear()
         if self.enable_debug:
+            self.viz.close()  # 🔥 Закрытие объединённого интерфейса
             plt.ioff()
             plt.show()
 
