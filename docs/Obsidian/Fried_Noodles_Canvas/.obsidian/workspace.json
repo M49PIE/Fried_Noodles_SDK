@@ -1,0 +1,241 @@
+{
+  "main": {
+    "id": "358db96d98b45b9e",
+    "type": "split",
+    "children": [
+      {
+        "id": "e3b8f4fc990e0b37",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a5f0004b6fedfb62",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Новая вкладка"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "df2b25e5f54388a0",
+    "type": "split",
+    "children": [
+      {
+        "id": "2621668ed05c4c12",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e6e7de0efaac26c0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "3a30f05366205d3d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "51bcec2dfb782f1c",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "b308db7fcfb320c1",
+    "type": "split",
+    "children": [
+      {
+        "id": "2a69a0938e4aad25",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "51e4e3cb14904fcd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки"
+            }
+          },
+          {
+            "id": "032220ccde580ab1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Noodles.canvas",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из Noodles"
+            }
+          },
+          {
+            "id": "ca9a7f71f10be75d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "460b2b8a0dac7598",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "3b5d1a4e81e19a91",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура"
+            }
+          },
+          {
+            "id": "b422a8eda2fd2f86",
+            "type": "leaf",
+            "state": {
+              "type": "smart-connections-view",
+              "state": {},
+              "icon": "smart-connections",
+              "title": "Connections"
+            }
+          },
+          {
+            "id": "7bc5773d0c0a5c08",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ],
+        "currentTab": 5
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
+      "templater-obsidian:Templater": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "smart-connections:Smart Connections: Open connections view": false,
+      "smart-connections:Smart Connections: Open random connection": false,
+      "smart-connections:Smart Lookup: Open lookup view": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "omnisearch:Omnisearch": false
+    }
+  },
+  "active": "a5f0004b6fedfb62",
+  "lastOpenFiles": [
+    "_Noodles.canvas",
+    "0.7 Vector.md",
+    "0.6 Agentic Capacity.md",
+    "4.14 Failure.md",
+    "4.12 Discharge.md",
+    "4.11 Consolidation.md",
+    "4.10 Sleep.md",
+    "4.9 Response.md",
+    "4.8 Reinforcement.md",
+    "4.7 Punishment.md",
+    "4.6 Modeling.md",
+    "4.4 Operant Conditioning.md",
+    "4.2 Locutionary Act.md",
+    "4.1 Locomotion.md",
+    "3.12 Level of Irreality.md",
+    "3.11 Valence.md",
+    "3.10 Zero Valence.md",
+    "3.9 Negative Valence.md",
+    "3.8 Positive Valence.md",
+    "3.6 Thinking.md",
+    "3.5 Memory Systems.md",
+    "3.4 State.md",
+    "3.3 Emotion.md",
+    "3.2 Disposition.md",
+    "3.1 Yerkes-Dodson Law.md",
+    "3.1 Attribution.md",
+    "Без названия.canvas",
+    "Без названия 1.canvas",
+    "Без названия",
+    "Без названия.base",
+    "Без названия 1.base"
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "main": {
+    "id": "50e7ed0afb85ea1a",
+    "type": "split",
+    "children": [
+      {
+        "id": "080306175056b915",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a4cffcfa0398a0f3",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Obsidian/Fried_Noodles_Canvas/_Noodles.canvas",
+                "viewState": {
+                  "x": -2168.8364958466877,
+                  "y": -3842.9670338627852,
+                  "zoom": -1.6796446945039154
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "_Noodles"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0430a0067878d9ca",
+    "type": "split",
+    "children": [
+      {
+        "id": "ab88cd2366e1601b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d95c92f93dbc0237",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "39d423590a7c627f",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "fc149ba9dc5e3e5b",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "3c55078ee48d2786",
+    "type": "split",
+    "children": [
+      {
+        "id": "9d464c82d66f98bc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "059821574b31f00a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Obsidian/Fried_Noodles_Canvas/_Noodles.canvas",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки для _Noodles"
+            }
+          },
+          {
+            "id": "0d6a31237ad3e8fd",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Obsidian/Fried_Noodles_Canvas/_Noodles.canvas",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки из _Noodles"
+            }
+          },
+          {
+            "id": "7444235cafb081e0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "2ac1de6ba29437ce",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "26610cb9f92aa53d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Obsidian/Fried_Noodles_Canvas/_Noodles.canvas",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура _Noodles"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false,
+      "obsidian-excalidraw-plugin:Создать новый чертеж": false,
+      "obsidian-kanban:Create new board": false,
+      "templater-obsidian:Templater": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false
+    }
+  },
+  "active": "d95c92f93dbc0237",
+  "lastOpenFiles": [
+    "Obsidian/Fried_Noodles_Canvas/_Noodles.canvas",
+    "Obsidian/Fried_Noodles_Canvas/8.2 Deal.md",
+    "Obsidian/Fried_Noodles_Canvas/8.1 Locutionary Act.md",
+    "Obsidian/Fried_Noodles_Canvas/5.7 Valence.md",
+    "architecture.md",
+    "field_theory.md",
+    "Obsidian/Fried_Noodles_Canvas/1.0 Plate_Tablet.md",
+    "Obsidian/Fried_Noodles_Canvas/1 Plate (world_model).md",
+    "Obsidian/Fried_Noodles_Canvas/9.5 Failure.md",
+    "Obsidian/Fried_Noodles_Canvas/9.4 Success.md",
+    "Obsidian/Fried_Noodles_Canvas/9.3 Discharge.md",
+    "Obsidian/Fried_Noodles_Canvas/9.2 Vicarious Learning.md",
+    "Obsidian/Fried_Noodles_Canvas/9.1 Operant Conditioning.md",
+    "Obsidian/Fried_Noodles_Canvas/9 Sauce (valence_update).md",
+    "Obsidian/Fried_Noodles_Canvas/8 Cherry (locutionary_output).md",
+    "Obsidian/Fried_Noodles_Canvas/7.4 Field Action.md",
+    "Obsidian/Fried_Noodles_Canvas/7.3 Consolidation.md",
+    "Obsidian/Fried_Noodles_Canvas/7.2 Vector.md",
+    "Obsidian/Fried_Noodles_Canvas/7.1 Locomotion.md",
+    "Obsidian/Fried_Noodles_Canvas/7 Ebi (action_executor).md",
+    "Obsidian/Fried_Noodles_Canvas/6.6 Emotion.md",
+    "Obsidian/Fried_Noodles_Canvas/6.5 State.md",
+    "Obsidian/Fried_Noodles_Canvas/6.4 Level of Irreality.md",
+    "Obsidian/Fried_Noodles_Canvas/6.3 Thinking.md",
+    "Obsidian/Fried_Noodles_Canvas/6.2 Disposition.md",
+    "Obsidian/Fried_Noodles_Canvas/6.1 Yerkes-Dodson Law.md",
+    "Obsidian/Fried_Noodles_Canvas",
+    "Obsidian"
+  ]
+}

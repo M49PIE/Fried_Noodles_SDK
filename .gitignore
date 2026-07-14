@@ -1,44 +1,51 @@
-# === PYTHON ARTIFACTS ===
+# ==========================================
+# PYTHON ENVIRONMENT & BUILD ARTIFACTS
+# ==========================================
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
 venv/
+env/
+ENV/
 *.egg-info/
 dist/
 build/
 .pytest_cache/
+.coverage
 
-# === OBSIDIAN (игнорируем ВСЕ файлы заметок, настроек и канвасов) ===
-.obsidian/
-Obsidian/
-*.canvas
-*.canvas~
-*.md~
-# Явно указываем пути внутри docs/, на всякий случай
-docs/.obsidian/
-docs/Obsidian/
-
-# === IDE & EDITORS ===
+# ==========================================
+# IDE, EDITORS & OS FILES
+# ==========================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# === OS & TEMP FILES ===
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# === LOGS & GENERATED DATA (НО оставляем конфиги!) ===
+# ==========================================
+# LOGS & RUNTIME DATA
+# ==========================================
 logs/
 *.log
-data/
+# Runtime memory exports (ignored)
+memory_field/known_objects.json
+memory_field/semantic_base.json
+# Configs (explicitly kept)
 !configs/
 !configs/*.json
 
-# === GIT ITSELF ===
-.git/
+# ==========================================
+# DOCS & OBSIDIAN
+# ==========================================
+#  docs/ ON GITHUB (including .canvas and .md)
+# Only ignore Obsidian's internal workspace settings.
+docs/.obsidian/
+docs/.trash/
+
+# If you have a separate root Obsidian vault folder, keep it ignored:
+# Obsidian/
